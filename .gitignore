@@ -7,3 +7,17 @@ __pycache__/
 .venv/
 venv/
 .env
+node_modules/
+
+# Serena code-search tool local state
+.serena/
+
+# Claude Code local state (settings, transcripts)
+.claude/
+
+# Vendored OpenClaw clone (used to build @openclaw/sdk via file: link).
+# Not source code we own; teammates can re-clone with the README's pinned commit.
+third_party/
+
+# Generated dataset diff backups (one-off, not source of truth)
+data/openclaw_dataset.json.before_data_update
