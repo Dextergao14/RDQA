@@ -15,9 +15,8 @@ node_modules/
 # Claude Code local state (settings, transcripts)
 .claude/
 
-# Vendored OpenClaw clone (used to build @openclaw/sdk via file: link).
-# Not source code we own; teammates can re-clone with the README's pinned commit.
-third_party/
+# third_party/openclaw is a git submodule pinned to a specific commit.
+# Submodule state is tracked by git itself, not via path ignore.
 
 # Generated dataset diff backups (one-off, not source of truth)
 data/openclaw_dataset.json.before_data_update

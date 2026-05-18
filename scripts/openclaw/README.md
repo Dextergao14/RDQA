@@ -52,18 +52,53 @@ During onboarding, choose OpenRouter as the model provider and enter `OPENROUTER
 
 ## Install Runner Dependencies
 
-The SDK package in the local OpenClaw clone is private, so build it once before installing this runner:
+`third_party/openclaw/` is a git submodule pinned to OpenClaw commit
+`f066dd2` (= release `2026.5.12`, which matches the daemon installed by
+`npm install -g openclaw@latest`). The SDK is `@openclaw/sdk` and is not
+published to npm, so it must be built from the submodule before this runner
+can install its `file:` dependency.
+
+### Fresh checkout (teammates cloning the RDQA repo for the first time)
 
 ```bash
-cd /mnt/d/Github/RDQA/third_party/openclaw
+# 1. Clone with submodule contents
+git clone --recurse-submodules <RDQA-repo-url>
+
+# (If the repo was already cloned without --recurse-submodules:)
+git submodule update --init --recursive
+```
+
+### Build the SDK + link this runner
+
+```bash
+# Build @openclaw/sdk from the submodule (~1 min)
+cd third_party/openclaw
 pnpm install
 pnpm --filter @openclaw/sdk build
 
-cd /mnt/d/Github/RDQA/scripts/openclaw
+# Install runner deps; pnpm step above produced packages/sdk/dist/ which
+# `file:../../third_party/openclaw/packages/sdk` will pick up.
+cd ../../scripts/openclaw
 npm install
 ```
 
-If the public `openclaw` npm package later exports the SDK, replace the local file dependency in `package.json`.
+### Pulling submodule updates later
+
+The submodule URL is upstream OpenClaw (`https://github.com/openclaw/openclaw.git`).
+If you ever bump to a newer OpenClaw version (e.g. when daemon upgrades):
+
+```bash
+cd third_party/openclaw
+git fetch origin
+git checkout <new-commit-or-tag>
+cd ../..
+pnpm -C third_party/openclaw --filter @openclaw/sdk build
+git add third_party/openclaw     # stages the new pinned commit
+git commit -m "Bump openclaw submodule to <version>"
+```
+
+> Do not commit `third_party/openclaw/node_modules` or
+> `third_party/openclaw/packages/*/dist`; the submodule only tracks source.
 
 ## Smoke Test
 
