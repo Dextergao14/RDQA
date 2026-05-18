@@ -80,6 +80,18 @@ def repair_rdqa_json(text: str) -> str:
         text,
     )
 
+    # answer_variants written as bare comma-separated strings instead of a JSON
+    # array (part_20 has this in at least one row). Wrap in [...] and ensure a
+    # trailing comma before the next field.
+    text = re.sub(
+        r'("answer_variants"\s*:\s*)'
+        r'("(?:[^"\\]|\\.)*"(?:\s*,\s*"(?:[^"\\]|\\.)*")+)'
+        r'(\s*\r?\n\s*)'
+        r'("[A-Za-z_]+"\s*:)',
+        r"\1[\2],\3\4",
+        text,
+    )
+
     # Missing commas between adjacent object/list values and the next known item field.
     known = "|".join(KNOWN_ITEM_FIELDS)
     text = re.sub(rf"([}}\]])(\r?\n\s*\"(?:{known})\"\s*:)", r"\1,\2", text)
