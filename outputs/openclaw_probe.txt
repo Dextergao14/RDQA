@@ -1,0 +1,110 @@
+
+=== tools.list ===  ERROR: unknown method: tools.list
+
+=== tools.list ===  ERROR: unknown method: tools.list
+
+=== agents.list ===
+{
+  "defaultId": "main",
+  "mainKey": "main",
+  "scope": "per-sender",
+  "agents": [
+    {
+      "id": "main",
+      "workspace": "C:\\Users\\rtx3090\\.openclaw\\workspace",
+      "agentRuntime": {
+        "id": "codex",
+        "source": "implicit"
+      }
+    }
+  ]
+}
+
+=== agents.get ===  ERROR: unknown method: agents.get
+
+=== skills.list ===  ERROR: unknown method: skills.list
+
+=== toolsets.list ===  ERROR: unknown method: toolsets.list
+
+=== config.schema.lookup ===
+{
+  "path": "agents.defaults",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "title": "Agent Defaults",
+    "description": "Shared default settings inherited by agents unless overridden per entry in agents.list. Use defaults to enforce consistent baseline behavior and reduce duplicated per-agent configuration."
+  },
+  "hint": {
+    "label": "Agent Defaults",
+    "help": "Shared default settings inherited by agents unless overridden per entry in agents.list. Use defaults to enforce consistent baseline behavior and reduce duplicated per-agent configuration.",
+    "tags": [
+      "advanced"
+    ]
+  },
+  "hintPath": "agents.defaults",
+  "children": [
+    {
+      "key": "params",
+      "path": "agents.defaults.params",
+      "type": "object",
+      "required": false,
+      "hasChildren": true
+    },
+    {
+      "key": "agentRuntime",
+      "path": "agents.defaults.agentRuntime",
+      "type": "object",
+      "required": false,
+      "hasChildren": true,
+      "hint": {
+        "label": "Legacy Default Agent Runtime",
+        "help": "Legacy whole-agent runtime policy. It is ignored by runtime selection; configure runtime policy on a provider or model instead. Run openclaw doctor --fix to remove stale values.",
+        "tags": [
+          "advanced"
+        ]
+      },
+      "hintPath": "agents.defaults.agentRuntime"
+    },
+    {
+      "key": "embeddedHarness",
+      "path": "agents.defaults.embeddedHarness",
+      "type": "object",
+      "required": false,
+      "hasChildren": true,
+      "hint": {
+        "label": "Default Legacy Embedded Harness Settings",
+        "help": "Legacy whole-agent embedded harness input. Run openclaw doctor --fix to remove it and use provider/model runtime policy where needed.",
+        "tags": [
+          "advanced"
+        ]
+      },
+      "hintPath": "agents.defaults.embeddedHarness"
+    },
+    {
+      "key": "model",
+      "path": "agents.defaults.model",
+      "required": false,
+      "hasChildren": true
+    },
+    {
+      "key": "imageModel",
+      "path": "agents.defaults.imageModel",
+      "required": false,
+      "hasChildren": true
+    },
+    {
+      "key": "imageGenerationModel",
+      "path": "agents.defaults.imageGenerationModel",
+      "required": false,
+      "hasChildren": true
+    },
+    {
+      "key": "videoGenerationModel",
+      "path": "agents.defaults.videoGenerationModel",
+      "required": false,
+      "hasChildren": true
+    },
+    {
+      "key": "musicGenerationModel",
+      "pa
