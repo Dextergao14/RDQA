@@ -1,0 +1,53 @@
+# Default config for run_batch.ts.
+# All paths resolved relative to the RDQA repo root, unless noted.
+# `extends` (when present in a preset) is relative to the config file's own dir.
+#
+# OpenClaw reference docs (all verified 2026-05-17):
+#   - Thinking levels:           https://docs.openclaw.ai/tools/thinking
+#   - Agents config (incl.
+#     systemPromptOverride,
+#     thinkingDefault):          https://docs.openclaw.ai/gateway/config-agents
+#   - Tools config (profile,
+#     tool groups):              https://docs.openclaw.ai/gateway/config-tools
+
+# Map short aliases ("qwen", "kimi", "glm", "all") to full OpenRouter slugs.
+# Pass `--model <alias>` or `--model <full/slug>` on the CLI.
+models:
+  qwen: openrouter/qwen/qwen3-235b-a22b
+  kimi: openrouter/moonshotai/kimi-k2.6
+  glm: openrouter/z-ai/glm-5.1
+
+# System prompt management.
+#   apply=true  -> run_batch.ts patches the OpenClaw daemon's
+#                  `agents.defaults.systemPromptOverride` with `file`'s content.
+#                  Replaces OpenClaw's default assembled system prompt entirely.
+#   apply=false -> skip patching; daemon keeps whatever system prompt it
+#                  currently has (OpenClaw default scaffolding, or your
+#                  manual setting from the Control UI).
+# Docs: https://docs.openclaw.ai/gateway/config-agents (search "systemPromptOverride")
+system_prompt:
+  apply: true
+  file: scripts/openclaw/config/rdqa_system_prompt.txt
+
+# Per-run defaults. CLI flags override these.
+defaults:
+  # Thinking / reasoning level passed to runs.create({...thinking}).
+  # Valid: "default" | "off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "adaptive" | "max"
+  #   "default" -> do NOT pass thinking; let model + framework fallback resolve it
+  #                (Qwen3 reasoning-capable models fall back to "medium").
+  #   "off"     -> explicitly disable reasoning where supported.
+  # Some providers have caveats — quote: "When thinking is enabled, Moonshot only
+  # accepts tool_choice auto|none" (i.e. forced tool calls won't work with Kimi
+  # unless thinking="off"). "Z.AI only supports binary thinking (on/off)".
+  # Docs: https://docs.openclaw.ai/tools/thinking
+  thinking: "medium"
+
+  concurrency: 1
+  timeout_ms: 600000   # 10 minutes per task
+  resume: true         # skip task_ids already in results.jsonl
+  retry_failed: false  # when resuming, also rerun previously failed rows
+
+# I/O paths (relative to repo root).
+paths:
+  dataset: data/openclaw_dataset.json
+  output_root: outputs/openclaw
