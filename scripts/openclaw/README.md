@@ -445,7 +445,8 @@ git commit -m "Bump openclaw submodule to <version>"
 
 | symptom | fix |
 |---|---|
-| `gateway connect failed: protocol mismatch` | Submodule out of sync with daemon. `openclaw --version` shows daemon's commit; `git -C third_party/openclaw rev-parse HEAD` should match. Bump per §6. |
+| `gateway connect failed: protocol mismatch` | Submodule out of sync with daemon. `openclaw --version` shows daemon's commit; `git -C third_party/openclaw rev-parse HEAD` should match. Bump per §7. |
+| `Error: Model override "openrouter/..." is not allowed for agent "main"` | The daemon's `agents.defaults.models` allow list only includes models registered during `openclaw onboard`. To add Kimi / GLM (or any other model not in the wizard): <br>`openclaw config set 'agents.defaults.models["openrouter/moonshotai/kimi-k2.6"]' '{}'` <br>`openclaw config set 'agents.defaults.models["openrouter/z-ai/glm-5.1"]' '{}'` <br>`openclaw gateway restart` (the CLI prints "Restart the gateway to apply"). Verify via `openclaw config get agents.defaults.models`. |
 | `unauthorized: gateway token missing` | Runner couldn't find the daemon's auth token. `run_batch.ts` auto-reads `~/.openclaw/openclaw.json` `gateway.auth.token`. Make sure that file exists and contains a token (run `openclaw doctor`). |
 | `Cannot find module '@openclaw/sdk'` | Re-run `pnpm --filter @openclaw/sdk build` inside `third_party/openclaw/`, then `npm install` inside `scripts/openclaw/`. |
 | Many `prediction_failure_reason: empty_output` | Daemon probably rate-limited or model errored mid-stream. Re-run with `--retry-failed`. |
