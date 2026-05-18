@@ -37,19 +37,46 @@ cd RDQA
 git submodule update --init --recursive
 ```
 
-### 1.2 Install OpenClaw daemon (one-time per machine)
+### 1.2 Get an OpenRouter API key
+
+The benchmark calls Qwen / Kimi / GLM through [OpenRouter](https://openrouter.ai/),
+which charges per token across providers (no need to sign up with each one
+separately).
+
+1. Create an account at https://openrouter.ai/
+2. Generate a key at https://openrouter.ai/keys (starts with `sk-or-v1-...`)
+3. Top up some credit (~$5 is enough to smoke-test; a full 1106-task run on
+   Qwen is roughly $2-5, more on Kimi / GLM)
+
+**Where the key lives:** OpenClaw stores it in the daemon's own config
+(`~/.openclaw/openclaw.json`) during onboarding (next step). The runner in
+this folder **does not** read `OPENROUTER_API_KEY` directly — it talks to
+the daemon, the daemon talks to OpenRouter. So the repo's `.env` file is
+not required for batch runs.
+
+### 1.3 Install OpenClaw daemon (one-time per machine)
 
 ```bash
 nvm install 22 && nvm use 22                   # need Node >= 22.16
 npm install -g openclaw@latest                 # we pin to 2026.5.12 (= submodule commit f066dd2)
 openclaw onboard --install-daemon
-#   wizard: pick OpenRouter as the provider, paste OPENROUTER_API_KEY,
-#           default model -> openrouter/qwen/qwen3-235b-a22b,
-#           skip channels (we only use the SDK).
-openclaw doctor                                # sanity check
+#   wizard:
+#     - workspace path                → ~/.openclaw/workspace (default is fine)
+#     - default model provider        → OpenRouter
+#     - OPENROUTER_API_KEY            → paste the sk-or-v1-... key from step 1.2
+#     - default model id              → openrouter/qwen/qwen3-235b-a22b
+#     - install daemon as a service   → yes (so it auto-starts)
+#     - channels (Telegram/Discord/…) → skip (we only use the SDK)
+openclaw doctor                                # sanity check; should report a running gateway
 ```
 
-### 1.3 Build the OpenClaw SDK from the pinned submodule
+You can verify the saved config any time with:
+
+```bash
+openclaw config get models.providers.openrouter.config.apiKey   # masked
+```
+
+### 1.4 Build the OpenClaw SDK from the pinned submodule
 
 ```bash
 cd third_party/openclaw
@@ -58,7 +85,7 @@ pnpm --filter @openclaw/sdk build              # produces packages/sdk/dist/
 cd ../..
 ```
 
-### 1.4 Install the runner's npm deps
+### 1.5 Install the runner's npm deps
 
 ```bash
 cd scripts/openclaw
@@ -66,7 +93,7 @@ npm install                                    # picks up @openclaw/sdk via file
 cd ../..
 ```
 
-### 1.5 Generate the dataset JSON
+### 1.6 Generate the dataset JSON
 
 ```bash
 python scripts/openclaw/build_dataset.py
@@ -74,7 +101,7 @@ python scripts/openclaw/build_dataset.py
 # -> data/openclaw_metadata.json  (sidecar with ground truth + source URLs)
 ```
 
-### 1.6 Smoke test (5 questions, Qwen, thinking=medium)
+### 1.7 Smoke test (5 questions, Qwen, thinking=medium)
 
 ```powershell
 # PowerShell on Windows — use `npx tsx` to avoid npm flag-stripping quirks
@@ -84,7 +111,7 @@ npx tsx run_batch.ts --model qwen --limit 5 --no-resume
 
 If you see `tool.call.started name=web_search` events in the trace, the chain is healthy.
 
-### 1.7 Full run (all 3 open-source models)
+### 1.8 Full run (all 3 open-source models)
 
 ```powershell
 cd D:\Github\RDQA\scripts\openclaw
