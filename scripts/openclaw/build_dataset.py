@@ -11,11 +11,6 @@ from pathlib import Path
 from typing import Any
 
 
-PROMPT_TEMPLATE = """query: {query}
-
-constraints: {constraints}"""
-
-
 KNOWN_ITEM_FIELDS = (
     "ground_truth",
     "source_file",
@@ -26,6 +21,11 @@ KNOWN_ITEM_FIELDS = (
     "reasoning_flag",
     "sub_capability_family",
 )
+
+
+PROMPT_TEMPLATE = """query: {query}
+
+constraints: {constraints}"""
 
 
 def natural_part_key(path: Path) -> int:
