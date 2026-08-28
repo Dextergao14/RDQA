@@ -1,9 +1,16 @@
-# Excluded from repo: raw source files and media
-
-
-# Optional local / IDE
+# Local / IDE
 *.pyc
 __pycache__/
 .venv/
 venv/
 .env
+.DS_Store
+.claude/
+
+# Generated eval files (run: python eval/convert_dataset.py)
+data/rdqa_eval.jsonl
+data/rdqa_eval_blind.jsonl
+
+# Local run outputs
+runs/
+smoke_run/
